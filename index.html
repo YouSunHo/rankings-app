@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>레벨 순위표</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h1>레벨 순위표</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>순위</th>
+                <th>서버</th>
+                <th>국가</th>
+                <th>주군명</th>
+                <th>레벨</th>
+                <th>선공치</th>
+            </tr>
+        </thead>
+        <tbody id="rankings"></tbody>
+    </table>
+
+    <script>
+async function loadRankings() {
+    const response = await fetch('https://raw.githubusercontent.com/username/rankings-app/main/rankings.txt'); // raw URL
+    const text = await response.text();
+    const lines = text.trim().split('\n').slice(1);
+    
+    const players = lines.map(line => {
+        const [rank, server, country, generalName, level, attackPower] = line.split(',');
+        return {
+            rank: parseInt(rank),
+            server,
+            country,
+            generalName,
+            level: parseInt(level),
+            attackPower: parseInt(attackPower),
+        };
+    });
+
+    // 선공치 기준으로 정렬
+    const sortedPlayers = players.sort((a, b) => b.attackPower - a.attackPower);
+    displayRankings(sortedPlayers);
+}
+
+
+        window.onload = loadRankings;
+    </script>
+</body>
+</html>
